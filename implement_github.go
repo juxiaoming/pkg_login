@@ -3,7 +3,6 @@ package pkg_login
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/url"
 	"strconv"
 )
@@ -51,17 +50,14 @@ type GithubTokenResponse struct {
 }
 
 func (g *GithubServer) token(code string) (string, error) {
-	payload := map[string]string{
-		"code":          code,
-		"client_id":     config.GithubId,
-		"client_secret": config.GithubSecret,
-		"redirect_uri":  config.GithubRedirectUrl,
-	}
-	payloadBytes, _ := json.Marshal(payload)
+	formData := url.Values{}
+	formData.Set("code", code)
+	formData.Set("client_id", config.GithubId)
+	formData.Set("client_secret", config.GithubSecret)
+	formData.Set("redirect_uri", config.GithubRedirectUrl)
 
-	headers := map[string]string{"Accept": "application/json", "Content-Type": "multipart/form-data"}
-
-	response, err := postBase(GithubTokenPath, string(payloadBytes), headers)
+	headers := map[string]string{"Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded"}
+	response, err := postBase(GithubTokenPath, formData.Encode(), headers)
 	if err != nil {
 		return "", err
 	}
@@ -78,8 +74,6 @@ func (g *GithubServer) token(code string) (string, error) {
 		return "", errors.New(responseStruct.Error)
 	}
 
-	fmt.Println("token响应数据", responseStruct)
-
 	return responseStruct.AccessToken, nil
 }
 
@@ -95,8 +89,6 @@ func (g *GithubServer) GetUserinfo(code string) (*Userinfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("这是token数据", token)
 
 	headers := map[string]string{"Authorization": "Bearer " + token}
 	response, err := getBase(GithubUserInfoPath, headers)
