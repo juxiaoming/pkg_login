@@ -3,6 +3,7 @@ package pkg_login
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/url"
 	"strconv"
 )
@@ -92,6 +93,8 @@ func (g *GithubServer) GetUserinfo(code string) (*Userinfo, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(token)
 
 	headers := map[string]string{"Authorization": "Bearer " + token}
 	response, err := getBase(GithubUserInfoPath, headers)
