@@ -59,7 +59,7 @@ func (g *GithubServer) token(code string) (string, error) {
 	}
 	payloadBytes, _ := json.Marshal(payload)
 
-	headers := map[string]string{"Accept": "application/json"}
+	headers := map[string]string{"Accept": "application/json", "Content-Type": "multipart/form-data"}
 
 	response, err := postBase(GithubTokenPath, string(payloadBytes), headers)
 	if err != nil {
@@ -74,8 +74,8 @@ func (g *GithubServer) token(code string) (string, error) {
 		return "", err
 	}
 
-	if len(responseStruct.ErrorDescription) != 0 {
-		return "", errors.New(responseStruct.ErrorDescription)
+	if len(responseStruct.Error) != 0 {
+		return "", errors.New(responseStruct.Error)
 	}
 
 	fmt.Println("token响应数据", responseStruct)
