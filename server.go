@@ -20,6 +20,9 @@ type Config struct {
 	GoogleId          string `json:"google_id"`
 	GoogleSecret      string `json:"google_secret"`
 	GoogleRedirectUrl string `json:"google_redirect_url"`
+	GithubId          string `json:"github_id"`
+	GithubSecret      string `json:"github_secret"`
+	GithubRedirectUrl string `json:"github_redirect_url"`
 }
 
 type Userinfo struct {
@@ -55,6 +58,11 @@ func NewServer(implementId int8) (*Server, error) {
 			return nil, errors.New("缺失配置文件")
 		}
 		client = newGoogleServer()
+	case ImplementGithub:
+		if len(config.GithubId) == 0 || len(config.GithubSecret) == 0 || len(config.GithubRedirectUrl) == 0 {
+			return nil, errors.New("缺失配置文件")
+		}
+		client = newGithubServer()
 	default:
 		return nil, errors.New("未定义实现")
 	}

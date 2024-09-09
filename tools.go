@@ -1,6 +1,9 @@
 package pkg_login
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"github.com/google/uuid"
 	"net/http"
 	"strings"
 	"time"
@@ -29,4 +32,16 @@ func getBase(requestUrl string, headers map[string]string) (resp *http.Response,
 		req.Header.Set(index, val)
 	}
 	return client.Do(req)
+}
+
+func rand32Str() string {
+	harsher := md5.New()
+	harsher.Write([]byte(uuid.New().String()))
+	hashBytes := harsher.Sum(nil)
+	hashStr := hex.EncodeToString(hashBytes)
+	if len(hashStr) > 32 {
+		return hashStr[:32]
+	}
+
+	return hashStr
 }
