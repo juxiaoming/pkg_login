@@ -78,6 +78,8 @@ func (g *GithubServer) token(code string) (string, error) {
 		return "", errors.New(responseStruct.ErrorDescription)
 	}
 
+	fmt.Println("token响应数据", responseStruct)
+
 	return responseStruct.AccessToken, nil
 }
 
@@ -94,7 +96,7 @@ func (g *GithubServer) GetUserinfo(code string) (*Userinfo, error) {
 		return nil, err
 	}
 
-	fmt.Println(token)
+	fmt.Println("这是token数据", token)
 
 	headers := map[string]string{"Authorization": "Bearer " + token}
 	response, err := getBase(GithubUserInfoPath, headers)
