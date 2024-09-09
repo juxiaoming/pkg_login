@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+/**
+ * Doc : https://docs.github.com/zh/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
+ */
+
 const (
 	GithubRedirectPath = "https://github.com/login/oauth/authorize"    // Github获取code地址
 	GithubTokenPath    = "https://github.com/login/oauth/access_token" // Github获取token地址
