@@ -1,5 +1,5 @@
 # pkg_login
-第三方 OAuth2 授权登录，参考https://github.com/netnr/Netnr.Login，使用go语言实现
+第三方 OAuth2 授权登录，使用go语言实现 ，参考https://github.com/netnr/Netnr.Login
 ### 安装
 ```
 go get github.com/juxiaoming/pkg_login
@@ -36,17 +36,23 @@ go get github.com/juxiaoming/pkg_login
 </table>
 
 ### 更多
-由于账号原因微信、qq、微博、支付宝还没有封装，等我！
+由于账号原因【微信】、【qq】、【微博】、【支付宝】、【淘宝】还没有封装，等我！
 
 ### 使用
 ```go
-        pkg_login.Init(pkg_login.NewFeiShuConf("your_id", "your_secret", "redirect_url"))
-	server, err := pkg_login.NewServer(pkg_login.ImplementFeiShu)
-	if err != nil {
-		fmt.Println("初始化错误")
-		return
-	}
-	fmt.Println(server.RedirectUrl())
+//注册配置
+pkg_login.Init(pkg_login.NewFeiShuConf("your_id", "your_secret", "redirect_url"))
 
-	fmt.Println(server.GetUserinfo("your_code"))
+//初始化服务
+server, err := pkg_login.NewServer(pkg_login.ImplementFeiShu)
+if err != nil {
+	fmt.Println("初始化失败:" , err)
+	return
+}
+
+//获取web登录跳转地址
+fmt.Println(server.RedirectUrl())
+
+//获取授权后的账户信息
+fmt.Println(server.GetUserinfo("your_code"))
 ```
