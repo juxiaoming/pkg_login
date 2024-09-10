@@ -16,7 +16,7 @@ const (
 	DingDingUserInfoPath = "https://api.dingtalk.com/v1.0/contact/users/me"       // 钉钉获取用户信息接口
 )
 
-func NewDingDingServerConf(id, secret, redirectUrl string) *Config {
+func NewDingDingConf(id, secret, redirectUrl string) *Config {
 	return &Config{
 		DingDingId:          id,
 		DingDingSecret:      secret,
