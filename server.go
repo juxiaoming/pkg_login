@@ -10,6 +10,7 @@ const (
 	ImplementWeiBo    int8 = 5 // 微博
 	ImplementDingDing int8 = 6 // 钉钉
 	ImplementGitee    int8 = 7 // gitee码云
+	ImplementFeiShu   int8 = 8 // 飞书
 )
 
 var (
@@ -30,6 +31,9 @@ type Config struct {
 	DingDingId          string `json:"ding_ding_id"`
 	DingDingSecret      string `json:"ding_ding_secret"`
 	DingDingRedirectUrl string `json:"ding_ding_redirect_url"`
+	FeiShuId            string `json:"fei_shu_id"`
+	FeiShuSecret        string `json:"fei_shu_secret"`
+	FeiShuRedirectUrl   string `json:"fei_shu_redirect_url"`
 }
 
 type Userinfo struct {
@@ -82,6 +86,11 @@ func NewServer(implementId int8) (*Server, error) {
 			return nil, errors.New("缺失配置文件")
 		}
 		client = newDingDingServer()
+	case ImplementFeiShu:
+		if len(config.FeiShuId) == 0 || len(config.FeiShuSecret) == 0 || len(config.FeiShuRedirectUrl) == 0 {
+			return nil, errors.New("缺失配置文件")
+		}
+		client = newFeiShuServer()
 	default:
 		return nil, errors.New("未定义实现")
 	}
