@@ -16,6 +16,14 @@ const (
 	GoogleUserInfoPath = "https://www.googleapis.com/oauth2/v2/userinfo" // 谷歌获取用户信息接口
 )
 
+func NewGoogleConf(id, secret, redirectUrl string) *Config {
+	return &Config{
+		GoogleId:          id,
+		GoogleSecret:      secret,
+		GoogleRedirectUrl: redirectUrl,
+	}
+}
+
 type GoogleServer struct {
 }
 
@@ -53,16 +61,14 @@ type GoogleTokenResponse struct {
 }
 
 func (g *GoogleServer) token(code string) (string, error) {
-	payload := map[string]string{
-		"code":          code,
-		"client_id":     config.GoogleId,
-		"client_secret": config.GoogleSecret,
-		"redirect_uri":  config.GoogleRedirectUrl,
-		"grant_type":    "authorization_code",
-	}
-	payloadBytes, _ := json.Marshal(payload)
-
-	response, err := postBase(GoogleTokenPath, string(payloadBytes), nil)
+	formData := url.Values{}
+	formData.Set("code", code)
+	formData.Set("client_id", config.GoogleId)
+	formData.Set("client_secret", config.GoogleSecret)
+	formData.Set("redirect_uri", config.GoogleRedirectUrl)
+	formData.Set("grant_type", "authorization_code")
+	headers := map[string]string{"Accept": "application/json", "Content-Type": "application/x-www-form-urlencoded"}
+	response, err := postBase(GoogleTokenPath, formData.Encode(), headers)
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +101,7 @@ type GoogleUserInfo struct {
 func (g *GoogleServer) GetUserinfo(code string) (*Userinfo, error) {
 	token, err := g.token(code)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("token获取失败:" + err.Error())
 	}
 
 	headers := map[string]string{"Authorization": "Bearer " + token}

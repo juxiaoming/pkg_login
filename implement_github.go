@@ -17,6 +17,14 @@ const (
 	GithubUserInfoPath = "https://api.github.com/user"                 // Github获取用户信息接口
 )
 
+func NewGithubConf(id, secret, redirectUrl string) *Config {
+	return &Config{
+		GithubId:          id,
+		GithubSecret:      secret,
+		GithubRedirectUrl: redirectUrl,
+	}
+}
+
 type GithubServer struct {
 }
 
@@ -79,6 +87,7 @@ func (g *GithubServer) token(code string) (string, error) {
 
 type GithubUserInfo struct {
 	Login     string `json:"login"`
+	Name      string `json:"name"`
 	Id        int64  `json:"id"`
 	AvatarUrl string `json:"avatar_url"`
 	Message   string `json:"message"`
@@ -87,7 +96,7 @@ type GithubUserInfo struct {
 func (g *GithubServer) GetUserinfo(code string) (*Userinfo, error) {
 	token, err := g.token(code)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("token获取失败:" + err.Error())
 	}
 
 	headers := map[string]string{"Authorization": "Bearer " + token}
@@ -110,7 +119,7 @@ func (g *GithubServer) GetUserinfo(code string) (*Userinfo, error) {
 
 	return &Userinfo{
 		Openid:   strconv.Itoa(int(responseStruct.Id)),
-		NickName: responseStruct.Login,
+		NickName: responseStruct.Name,
 		Avatar:   responseStruct.AvatarUrl,
 	}, nil
 }

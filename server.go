@@ -3,12 +3,13 @@ package pkg_login
 import "errors"
 
 const (
-	ImplementGoogle   int8 = 1
-	ImplementWeiXin   int8 = 2
-	ImplementGithub   int8 = 3
-	ImplementQq       int8 = 4
-	ImplementWeiBo    int8 = 5
-	ImplementDingDing int8 = 6
+	ImplementGoogle   int8 = 1 // 谷歌
+	ImplementWeiXin   int8 = 2 // 微信
+	ImplementGithub   int8 = 3 // github
+	ImplementQq       int8 = 4 // qq
+	ImplementWeiBo    int8 = 5 // 微博
+	ImplementDingDing int8 = 6 // 钉钉
+	ImplementGitee    int8 = 7 // gitee码云
 )
 
 var (
@@ -23,6 +24,9 @@ type Config struct {
 	GithubId          string `json:"github_id"`
 	GithubSecret      string `json:"github_secret"`
 	GithubRedirectUrl string `json:"github_redirect_url"`
+	GiteeId           string `json:"gitee_id"`
+	GiteeSecret       string `json:"gitee_secret"`
+	GiteeRedirectUrl  string `json:"gitee_redirect_url"`
 }
 
 type Userinfo struct {
@@ -41,8 +45,8 @@ type Server struct {
 	ImplementId int8 `json:"implement_id"`
 }
 
-func Init(conf Config) {
-	config = conf
+func Init(conf *Config) {
+	config = *conf
 	hasInit = true
 }
 
@@ -63,6 +67,11 @@ func NewServer(implementId int8) (*Server, error) {
 			return nil, errors.New("缺失配置文件")
 		}
 		client = newGithubServer()
+	case ImplementGitee:
+		if len(config.GiteeId) == 0 || len(config.GiteeSecret) == 0 || len(config.GiteeRedirectUrl) == 0 {
+			return nil, errors.New("缺失配置文件")
+		}
+		client = newGiteeServer()
 	default:
 		return nil, errors.New("未定义实现")
 	}
