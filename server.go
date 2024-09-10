@@ -18,21 +18,26 @@ var (
 )
 
 type Config struct {
-	GoogleId          string `json:"google_id"`
-	GoogleSecret      string `json:"google_secret"`
-	GoogleRedirectUrl string `json:"google_redirect_url"`
-	GithubId          string `json:"github_id"`
-	GithubSecret      string `json:"github_secret"`
-	GithubRedirectUrl string `json:"github_redirect_url"`
-	GiteeId           string `json:"gitee_id"`
-	GiteeSecret       string `json:"gitee_secret"`
-	GiteeRedirectUrl  string `json:"gitee_redirect_url"`
+	GoogleId            string `json:"google_id"`
+	GoogleSecret        string `json:"google_secret"`
+	GoogleRedirectUrl   string `json:"google_redirect_url"`
+	GithubId            string `json:"github_id"`
+	GithubSecret        string `json:"github_secret"`
+	GithubRedirectUrl   string `json:"github_redirect_url"`
+	GiteeId             string `json:"gitee_id"`
+	GiteeSecret         string `json:"gitee_secret"`
+	GiteeRedirectUrl    string `json:"gitee_redirect_url"`
+	DingDingId          string `json:"ding_ding_id"`
+	DingDingSecret      string `json:"ding_ding_secret"`
+	DingDingRedirectUrl string `json:"ding_ding_redirect_url"`
 }
 
 type Userinfo struct {
 	Openid   string `json:"openid"`
+	UnionId  string `json:"unionId"`
 	NickName string `json:"nick_name"`
 	Avatar   string `json:"avatar"`
+	Mobile   string `json:"mobile"`
 }
 
 type Ability interface {
@@ -72,6 +77,11 @@ func NewServer(implementId int8) (*Server, error) {
 			return nil, errors.New("缺失配置文件")
 		}
 		client = newGiteeServer()
+	case ImplementDingDing:
+		if len(config.DingDingId) == 0 || len(config.DingDingSecret) == 0 || len(config.DingDingRedirectUrl) == 0 {
+			return nil, errors.New("缺失配置文件")
+		}
+		client = newDingDingServer()
 	default:
 		return nil, errors.New("未定义实现")
 	}
