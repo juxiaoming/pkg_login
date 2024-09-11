@@ -35,19 +35,19 @@ go get github.com/juxiaoming/pkg_login
     </tr>
 </table>
 
-### 更多
-由于账号原因【微信】、【qq】、【微博】、【支付宝】、【淘宝】还没有封装，等我！
-
 ### 使用
 ```go
-//注册配置
+//注册单服务配置
 pkg_login.Init(pkg_login.NewFeiShuConf("your_id", "your_secret", "redirect_url"))
+
+//注册多服务配置
+//pkg_login.Init(&pkg_login.Config{...})
 
 //初始化服务
 server, err := pkg_login.NewServer(pkg_login.ImplementFeiShu)
 if err != nil {
-	fmt.Println("初始化失败:" , err)
-	return
+    fmt.Println("初始化失败:" , err)
+    return
 }
 
 //获取web登录跳转地址
@@ -56,3 +56,7 @@ fmt.Println(server.RedirectUrl())
 //获取授权后的账户信息
 fmt.Println(server.GetUserinfo("your_code"))
 ```
+### 建议
+建议初始化配置文件之后单次调用pkg_login.Init()方法注册服务配置
+### 更多
+由于账号原因【微信】、【qq】、【微博】、【支付宝】、【淘宝】还没有测试集成，等我！
