@@ -10,7 +10,7 @@ import (
 )
 
 func postBase(url string, payload string, headers map[string]string) (resp *http.Response, err error) {
-	client := &http.Client{Timeout: time.Second * 5}
+	client := &http.Client{Timeout: time.Second * 30}
 	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
 	if err != nil {
 		return
@@ -23,7 +23,7 @@ func postBase(url string, payload string, headers map[string]string) (resp *http
 }
 
 func getBase(requestUrl string, headers map[string]string) (resp *http.Response, err error) {
-	client := &http.Client{Timeout: time.Second * 5}
+	client := &http.Client{Timeout: time.Second * 30}
 	req, err := http.NewRequest("GET", requestUrl, nil)
 	if err != nil {
 		return
